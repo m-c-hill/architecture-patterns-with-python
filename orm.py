@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Integer, MetaData, String, Table
+from sqlalchemy import Column, Date, Integer, MetaData, String, Table, ForeignKey
 from sqlalchemy.orm import mapper, relationship
 
 import model  # our domain models
@@ -26,6 +26,25 @@ batches = Table(
 )
 
 
+allocations = Table(
+    "allocations",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("orderline_id", ForeignKey("order_lines.id")),
+    Column("batch_id", ForeignKey("batches.id")),
+)
+
+
 def start_mappers():
     lines_mapper = mapper(model.OrderLine, order_lines)
-    batch_mapper = mapper(model.Batch, batches)
+    mapper(
+        model.Batch,
+        batches,
+        properties={
+            "_allocations": relationship(
+                lines_mapper,
+                secondary=allocations,
+                collection_class=set,
+            )
+        },
+    )

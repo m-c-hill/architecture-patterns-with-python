@@ -9,11 +9,11 @@ tomorrow = date.today() + timedelta(days=1)
 later = date.today() + timedelta(days=7)
 
 
-def make_batch_and_order_line(sku: str, batch_qty: int, line_qty: int):
+def make_batch_and_order_line(sku: str, batch_quantity: int, line_quantity: int):
     """Helper function to create dummy batch and order line pairs for testing"""
     return (
-        Batch("batch-001", sku, batch_qty, eta=date.today()),
-        OrderLine("order-001", sku, line_qty),
+        Batch("batch-001", sku, batch_quantity, eta=date.today()),
+        OrderLine("order-001", sku, line_quantity),
     )
 
 

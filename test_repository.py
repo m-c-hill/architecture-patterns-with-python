@@ -50,7 +50,7 @@ def insert_order_line(session) -> str:
     prepare order line data
     """
     session.execute(
-        "INSERT INTO order_lines (orderid, sku, qty)"
+        "INSERT INTO order_lines (orderid, sku, quantity)"
         ' VALUES ("order1", "GENERIC-SOFA", 12)'
     )
     [[orderline_id]] = session.execute(
