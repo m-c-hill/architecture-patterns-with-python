@@ -1,10 +1,12 @@
 from datetime import date
+
 import model
 import repository
 
 # =========================
 #  Test saving new objects
 # =========================
+
 
 def test_repository_can_save_a_batch(session):
     """
@@ -16,9 +18,11 @@ def test_repository_can_save_a_batch(session):
     repo.add(batch)
     session.commit()
 
-    rows = list(session.execute(
-        'SELECT reference, sku, _purchased_quantity, eta FROM "batches"'
-    ))
+    rows = list(
+        session.execute(
+            'SELECT reference, sku, _purchased_quantity, eta FROM "batches"'
+        )
+    )
     assert rows == [("batch1", "RED-CHAIRS", 12, date.today)]
 
 
@@ -32,15 +36,14 @@ def test_repository_can_save_an_order_line(session):
     repo.add(order_line)
     session.commit()
 
-    rows = list(session.execute(
-        'SELECT id, sku, quantity FROM "order_lines"'
-    ))
+    rows = list(session.execute('SELECT id, sku, quantity FROM "order_lines"'))
     assert rows == [("batch1", "RED-CHAIRS", 12, date.today)]
 
 
 # ===============================
 #  Test retrieving an allocation
 # ===============================
+
 
 def insert_order_line(session) -> str:
     """
