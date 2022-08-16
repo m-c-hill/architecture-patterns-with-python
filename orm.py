@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Date, Integer, MetaData, String, Table, ForeignKey
+from sqlalchemy import Column, Date, ForeignKey, Integer, MetaData, String, Table
 from sqlalchemy.orm import mapper, relationship
 
-import model  # our domain models
+import model
 
 metadata = MetaData()
 
@@ -10,10 +10,9 @@ order_lines = Table(
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("sku", String(255)),
-    Column("quantity", Integer, nullable=False),
+    Column("qty", Integer, nullable=False),
     Column("orderid", String(255)),
 )
-
 
 batches = Table(
     "batches",
@@ -24,7 +23,6 @@ batches = Table(
     Column("_purchased_quantity", Integer, nullable=False),
     Column("eta", Date, nullable=True),
 )
-
 
 allocations = Table(
     "allocations",

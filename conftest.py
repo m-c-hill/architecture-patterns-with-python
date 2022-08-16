@@ -5,12 +5,12 @@ from pathlib import Path
 import pytest
 import requests
 from requests.exceptions import ConnectionError
-from sqlalchemy.exc import OperationalError
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, clear_mappers
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import clear_mappers, sessionmaker
 
-from orm import metadata, start_mappers
 import config
+from orm import metadata, start_mappers
 
 
 @pytest.fixture
@@ -69,11 +69,11 @@ def add_stock(postgres_session):
     skus_added = set()
 
     def _add_stock(lines):
-        for ref, sku, quantity, eta in lines:
+        for ref, sku, qty, eta in lines:
             postgres_session.execute(
                 "INSERT INTO batches (reference, sku, _purchased_quantity, eta)"
-                " VALUES (:ref, :sku, :quantity, :eta)",
-                dict(ref=ref, sku=sku, quantity=quantity, eta=eta),
+                " VALUES (:ref, :sku, :qty, :eta)",
+                dict(ref=ref, sku=sku, qty=qty, eta=eta),
             )
             [[batch_id]] = postgres_session.execute(
                 "SELECT id FROM batches WHERE reference=:ref AND sku=:sku",

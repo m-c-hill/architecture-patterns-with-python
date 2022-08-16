@@ -5,10 +5,11 @@ from model import OrderLine
 from repository import AbstractRepository
 
 
-def is_valid_sku(sku, batches) -> bool:
-    """
-    Check if a sku exists within a list of batches
-    """
+class InvalidSku(Exception):
+    pass
+
+
+def is_valid_sku(sku, batches):
     return sku in {b.sku for b in batches}
 
 
@@ -19,7 +20,3 @@ def allocate(line: OrderLine, repo: AbstractRepository, session) -> str:
     batchref = model.allocate(line, batches)
     session.commit()
     return batchref
-
-
-class InvalidSku(Exception):
-    pass
