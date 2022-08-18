@@ -1,6 +1,6 @@
 # pylint: disable=protected-access
-import src.domain.model as model
-import src.adapters.repository as repository
+import src.allocation.domain.model as model
+import src.allocation.adapters.repository as repository
 
 
 def test_repository_can_save_a_batch(session):
@@ -62,4 +62,6 @@ def test_repository_can_retrieve_a_batch_with_allocations(session):
     assert retrieved == expected  # Batch.__eq__ only compares reference
     assert retrieved.sku == expected.sku
     assert retrieved._purchased_quantity == expected._purchased_quantity
-    assert retrieved._allocations == {model.OrderLine("order1", "GENERIC-SOFA", 12)}
+    assert retrieved._allocations == {
+        model.OrderLine("order1", "GENERIC-SOFA", 12),
+    }

@@ -1,6 +1,6 @@
 from datetime import date
 
-import src.domain.model as model
+import src.allocation.domain.model as model
 
 
 def test_orderline_mapper_can_load_lines(session):
