@@ -51,7 +51,7 @@ def test_happy_path_returns_201_and_allocated_batch():
 
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
-def test_unhappy_path_returns_400_and_error_message():
+def test_unhappy_path_allocate_returns_400_and_error_message():
     unknown_sku, orderid = random_sku(), random_orderid()
     data = {"orderid": orderid, "sku": unknown_sku, "qty": 20}
     url = config.get_api_url()
@@ -62,8 +62,8 @@ def test_unhappy_path_returns_400_and_error_message():
 
 @pytest.mark.usefixtures("postgres_db")
 @pytest.mark.usefixtures("restart_api")
-def test_deallocate():
-    sku, order1, order2 = random_sku(), random_orderid(), random_orderid()
+def test_happy_path_returns_200_and_deallocates():
+    sku, order1 = random_sku(), random_orderid()
     batch = random_batchref()
     post_to_add_batch(batch, sku, 100, "2011-01-02")
     url = config.get_api_url()
@@ -73,19 +73,23 @@ def test_deallocate():
     )
     assert r.json()["batchref"] == batch
 
-    # cannot allocate second order
-    r = requests.post(
-        f"{url}/allocate", json={"orderid": order2, "sku": sku, "qty": 100}
-    )
-    assert r.status_code == 400
-
     # deallocate
     r = requests.post(f"{url}/deallocate", json={"orderid": order1, "sku": sku})
-    assert r.ok
+    assert r.status_code == 200
+    assert r.json()["orderid"] == order1
 
-    # now we can allocate second order
+
+@pytest.mark.usefixtures("postgres_db")
+@pytest.mark.usefixtures("restart_api")
+def test_unhappy_path_deallocate_returns_400_and_error_message():
+    sku, order1 = random_sku(), random_orderid()
+    batch = random_batchref()
+    post_to_add_batch(batch, sku, 100, "2011-01-02")
+    url = config.get_api_url()
+
+    # attempt to deallocate an order line that has not been allocated previously
     r = requests.post(
-        f"{url}/allocate", json={"orderid": order2, "sku": sku, "qty": 100}
+        f"{url}/deallocate", json={"orderid": order1, "sku": sku, "qty": 100}
     )
-    assert r.ok
-    assert r.json()["batchref"] == batch
+    assert r.status_code == 400
+    assert r.json()["message"] == f'Order Line {order1} has not been allocated to a branch.'

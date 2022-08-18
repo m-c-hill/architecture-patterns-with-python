@@ -45,7 +45,8 @@ def allocate_endpoint():
 def deallocate_endpoint():
     try:
         order_id = request.json["orderid"]
-        services.deallocate(request.json["orderid"], repo, session)
+        sku = request.json["sku"]
+        services.deallocate(order_id, sku, unit_of_work.SqlAlchemyUnitOfWork())
     except services.NoBatchAllocated as e:
         return {"message": str(e)}, 400
 

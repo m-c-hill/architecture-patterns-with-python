@@ -1,4 +1,5 @@
 from datetime import date
+import pytest
 
 from src.allocation.domain.model import Batch, OrderLine
 
@@ -50,12 +51,12 @@ def test_allocation_is_idempotent():
 def test_deallocate():
     batch, line = make_batch_and_line("EXPENSIVE-FOOTSTOOL", 20, 2)
     batch.allocate(line)
-    batch.deallocate(line)
+    batch.deallocate(line.orderid)
     assert batch.available_quantity == 20
 
 
 def test_can_only_deallocate_allocated_lines():
     batch, unallocated_line = make_batch_and_line("DECORATIVE-TRINKET", 20, 2)
-    batch.deallocate(unallocated_line)
+    with pytest.raises(StopIteration):
+        batch.deallocate(unallocated_line.orderid)
     assert batch.available_quantity == 20
-    

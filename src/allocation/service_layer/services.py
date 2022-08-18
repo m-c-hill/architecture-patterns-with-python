@@ -41,12 +41,11 @@ def allocate(
     return batchref
 
 
-# TODO: rework with unit of work
-def deallocate(order_id: str, uow: unit_of_work.AbstractUnitOfWork) -> None:
+def deallocate(order_id: str, sku: str, uow: unit_of_work.AbstractUnitOfWork) -> None:
     with uow:
-        line = uow.orders.get(order_id)
-        batch = uow.orders.get_batch()  # [b for b in uow.batches.list() if b.sku == line.sku and b.order_line_assigned_to_batch(line)]
-        if not batch:
-            raise NoBatchAllocated(f"Order Line {line.orderid} has not been allocated to a branch.")
-        batch.deallocate(line)
+        try:
+            batch = uow.batches.get_batch_with_allocated_order(order_id, sku)
+        except IndexError:
+            raise NoBatchAllocated(f"Order Line {order_id} has not been allocated to a branch.")
+        batch.deallocate(order_id)
         uow.commit()

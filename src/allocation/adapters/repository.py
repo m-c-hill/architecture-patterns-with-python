@@ -26,5 +26,5 @@ class SqlAlchemyRepository(AbstractRepository):
     def list(self):
         return self.session.query(model.Batch).all()
 
-    def get_line(self, orderid):
-        return self.session.query(model.OrderLine).filter_by(orderid=orderid).one()
+    def get_batch_with_allocated_order(self, order_id, sku):
+        return [b for b in self.list() if b.sku == sku and b.order_line_assigned_to_batch(order_id)][0]

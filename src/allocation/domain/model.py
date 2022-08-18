@@ -55,12 +55,15 @@ class Batch:
         if self.can_allocate(line):
             self._allocations.add(line)
 
-    def deallocate(self, line: OrderLine):
-        if line in self._allocations:
-            self._allocations.remove(line)
+    def deallocate(self, order_id: str):
+        line = self.get_allocated_order_line(order_id)
+        self._allocations.remove(line)
 
-    def order_line_assigned_to_batch(self, line: OrderLine):
-        return line in self._allocations
+    def order_line_assigned_to_batch(self, order_id: str):
+        return order_id in [order.orderid for order in self._allocations]
+
+    def get_allocated_order_line(self, order_id: str):
+        return next(ol for ol in self._allocations if ol.orderid == order_id)
 
     @property
     def allocated_quantity(self) -> int:
