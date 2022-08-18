@@ -4,10 +4,10 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 import config
-import model
-import orm
-import repository
-import services
+import src.domain.model as model
+import src.adapters.orm as orm
+import src.adapters.repository as repository
+import src.service_layer.services as services
 
 orm.start_mappers()
 get_session = sessionmaker(bind=create_engine(config.get_postgres_uri()))

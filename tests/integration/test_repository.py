@@ -1,6 +1,6 @@
 # pylint: disable=protected-access
-import model
-import repository
+import src.domain.model as model
+import src.adapters.repository as repository
 
 
 def test_repository_can_save_a_batch(session):

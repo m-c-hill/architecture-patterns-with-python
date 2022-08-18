@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import model
-from model import OrderLine, Batch
-from repository import AbstractRepository
+import src.domain.model as model
+from src.domain.model import OrderLine, Batch
+from src.adapters.repository import AbstractRepository
 from datetime import date
 from typing import Optional, List
 
