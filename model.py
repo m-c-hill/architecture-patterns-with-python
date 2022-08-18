@@ -59,6 +59,9 @@ class Batch:
         if line in self._allocations:
             self._allocations.remove(line)
 
+    def order_line_assigned_to_batch(self, line: OrderLine):
+        return line in self._allocations
+
     @property
     def allocated_quantity(self) -> int:
         return sum(line.qty for line in self._allocations)
